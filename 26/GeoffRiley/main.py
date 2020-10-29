@@ -19,11 +19,12 @@ class GeoffGui:
     def __init__(self):
         pygame.init()
         self.display = pygame.display.set_mode((WIDTH, HEIGHT))
-        pygame.display.set_caption('Living with tomatoes')
-        self.gui_root = Panel(0, 0, WIDTH, HEIGHT, True, False, BLUE, BLACK)
+        pygame.display.set_caption('Gooey ooey ooey')
+        self.gui_root = Panel(0, 0, WIDTH, HEIGHT, self.display)
 
     def draw(self):
-        pass
+        self.gui_root.draw()
+        pygame.display.update()
 
     def run(self):
         """
@@ -34,12 +35,14 @@ class GeoffGui:
         while running:
             clock.tick(FPS)
             self.draw()
-            for event in pygame.event.get():
+            messages = pygame.event.get()
+            for event in messages:
                 if event.type == pygame.QUIT:
                     running = False
                     continue
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     pos = pygame.mouse.get_pos()
+            self.gui_root.message(messages)
 
         pygame.quit()
 
