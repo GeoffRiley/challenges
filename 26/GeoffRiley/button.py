@@ -15,26 +15,26 @@ from colours import *
 class Button(Panel):
     def __init__(self, left: int, top: int,
                  display: pygame.Surface = None, parent: BaseComponent = None, **kwargs):
-        width = kwargs.get('width', 60)
+        width: int = kwargs.get('width', 60)
         if 'width' in kwargs:
             kwargs.pop('width')
-        height = kwargs.get('height', 30)
+        height: int = kwargs.get('height', 30)
         if 'height' in kwargs:
             kwargs.pop('height')
         super().__init__(left, top, width, height, display, parent, **kwargs)
-        self._colour_button = SILVER
-        self._colour_hover = GREY
-        self._colour_click = WHITE
+        self._button_colour: ColourValue = verify_colour(BLUE)  # (SILVER)
+        self._hover_colour: ColourValue = verify_colour(RED)  # (GREY)
+        self._click_colour: ColourValue = verify_colour(WHITE)
 
-    def draw(self):
+    def draw(self) -> None:
         if self.visible:
             pos = pygame.mouse.get_pos()
             if self.area.collidepoint(pos):
-                self.background_colour = self._colour_hover
+                self.background_colour = self._click_colour if self._clicked else self._hover_colour
             else:
-                self.background_colour = self._colour_button
+                self.background_colour = self._button_colour
             super().draw()
 
     def message(self, message: List[pygame.event.Event]) -> None:
         if not self.disabled:
-            ...
+            super().message(message)

@@ -16,12 +16,12 @@ WHITE = (255, 255, 255)
 GREY = (128, 128, 128)
 SILVER = (192, 192, 192)
 
-_ColorValue = Union[
+ColourValue = Union[
     pygame.Color, str, Tuple[int, int, int], List[int], int, Tuple[int, int, int, int]
 ]
 
 
-def verify_colour(value: _ColorValue) -> pygame.Color:
+def verify_colour(value: ColourValue) -> pygame.Color:
     """
     Accepts any of the allowed colour specifying formats and returns a pygame native Color object
 
