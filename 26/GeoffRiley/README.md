@@ -81,3 +81,14 @@ being acknowledged.
 
 `BaseComponent` -> `Panel` -> `Button`
 
+### Visual properties
+
+- `click_colour` : ColourValue
+- `hover_colour` : ColourValue
+- `button_colour` : ColourValue
+
+## Label
+### Inheritance
+
+`BaseComponent` -> `Panel` -> `Label`
+

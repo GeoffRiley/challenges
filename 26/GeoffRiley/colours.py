@@ -1,5 +1,5 @@
 """
-    A list of colour constants as RGB tuples
+    A list of colour constants as RGB and RGBA tuples
 """
 from typing import Union, Tuple, List
 
@@ -15,6 +15,8 @@ MAGENTA = (255, 0, 255)
 WHITE = (255, 255, 255)
 GREY = (128, 128, 128)
 SILVER = (192, 192, 192)
+
+TRANSPARENT = (0, 0, 0, 0)
 
 ColourValue = Union[
     pygame.Color, str, Tuple[int, int, int], List[int], int, Tuple[int, int, int, int]

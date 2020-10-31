@@ -4,12 +4,10 @@
 
     Descended from panel
 """
-import pygame
-from typing import Tuple, List
 
 from base_component import BaseComponent
-from panel import Panel
 from colours import *
+from panel import Panel
 
 
 class Button(Panel):
@@ -22,8 +20,8 @@ class Button(Panel):
         if 'height' in kwargs:
             kwargs.pop('height')
         super().__init__(left, top, width, height, display, parent, **kwargs)
-        self._button_colour: ColourValue = verify_colour(BLUE)  # (SILVER)
-        self._hover_colour: ColourValue = verify_colour(RED)  # (GREY)
+        self._button_colour: ColourValue = verify_colour(SILVER)
+        self._hover_colour: ColourValue = verify_colour(GREY)
         self._click_colour: ColourValue = verify_colour(WHITE)
 
     def draw(self) -> None:
@@ -38,3 +36,27 @@ class Button(Panel):
     def message(self, message: List[pygame.event.Event]) -> None:
         if not self.disabled:
             super().message(message)
+
+    @property
+    def button_colour(self) -> ColourValue:
+        return self._button_colour
+
+    @button_colour.setter
+    def button_colour(self, value: ColourValue) -> None:
+        self._button_colour = verify_colour(value)
+
+    @property
+    def hover_colour(self) -> ColourValue:
+        return self._hover_colour
+
+    @hover_colour.setter
+    def hover_colour(self, value: ColourValue) -> None:
+        self._hover_colour = verify_colour(value)
+
+    @property
+    def click_colour(self) -> ColourValue:
+        return self._click_colour
+
+    @click_colour.setter
+    def click_colour(self, value: ColourValue) -> None:
+        self._click_colour = verify_colour(value)
