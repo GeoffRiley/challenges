@@ -3,13 +3,14 @@
     pygame gui implementation
     possibly with a calculator and a pelmanism game
 """
+import pygame
 
-from alignment import Alignment
-from base_component import BaseComponent
-from button import Button
-from colours import *
-from label import Label
-from panel import Panel
+from geoff_gui.alignment import Alignment
+from geoff_gui.base_component import BaseComponent
+from geoff_gui.button import Button
+from geoff_gui.colours import Colours
+from geoff_gui.label import Label
+from geoff_gui.panel import Panel
 
 # pygame generic parameters
 WIDTH, HEIGHT = 800, 600
@@ -26,11 +27,11 @@ class GeoffGui:
         pygame.display.set_caption('Gooey ooey ooey')
         self.gui_root = Panel(0, 0, WIDTH, HEIGHT, self.display)
 
-        x_spacing = WIDTH//4
+        x_spacing = WIDTH // 4
         for x in range(3):
             for y in range(3):
-                b = Button((x+1) * x_spacing - 30, y * 50 + 25)
-                b.text = f'Button ({x},{y})'
+                b = Button((x + 1) * x_spacing - 30, y * 50 + 25)
+                b.text = f'Btn ({x},{y})'
                 b.vertical_alignment = [Alignment.TOP, Alignment.MIDDLE, Alignment.BOTTOM][y]
                 b.horizontal_alignment = [Alignment.LEFT, Alignment.CENTER, Alignment.RIGHT][x]
                 b.tag = y * 3 + x + 1
@@ -39,7 +40,6 @@ class GeoffGui:
 
         self.label1 = Label(WIDTH // 2, HEIGHT // 2, text='HELLO')
         self.label1.font_size = 25
-        # self.label1.font_name = 'JetBrains'  # Mono'
         self.label1.text_align = (Alignment.CENTER, Alignment.MIDDLE)
 
         self.gui_root.add_component(self.label1)
@@ -57,12 +57,12 @@ class GeoffGui:
             (Alignment.LEFT, Alignment.TOP),
         ]
         self.label1.text_align = repos[comp.tag - 1]
-        self.label1.text = f'Clicked {comp.tag} {self.label1._font.name}'
+        self.label1.text = f'Clicked {comp.tag}'
 
     def draw(self):
         self.gui_root.draw()
-        pygame.draw.line(self.display, BLUE, (WIDTH // 2, 0), (WIDTH // 2, HEIGHT))
-        pygame.draw.line(self.display, BLUE, (0, HEIGHT // 2), (WIDTH, HEIGHT // 2))
+        pygame.draw.line(self.display, Colours.BLUE, (WIDTH // 2, 0), (WIDTH // 2, HEIGHT))
+        pygame.draw.line(self.display, Colours.BLUE, (0, HEIGHT // 2), (WIDTH, HEIGHT // 2))
         pygame.display.update()
 
     def run(self):
@@ -79,8 +79,8 @@ class GeoffGui:
                 if event.type == pygame.QUIT:
                     running = False
                     continue
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    pos = pygame.mouse.get_pos()
+                # if event.type == pygame.MOUSEBUTTONDOWN:
+                #     pos = pygame.mouse.get_pos()
             self.gui_root.message(messages)
 
         pygame.quit()

@@ -4,11 +4,12 @@
 
     Descended from panel
 """
+import pygame
 
-from alignment import Alignment
-from base_component import BaseComponent
-from colours import *
-from panel import Panel
+from geoff_gui.alignment import Alignment
+from geoff_gui.base_component import BaseComponent
+from geoff_gui.colours import Colours, verify_colour
+from geoff_gui.panel import Panel
 
 
 class Label(Panel):
@@ -24,7 +25,7 @@ class Label(Panel):
 
         self.text = text
         self.border = False
-        self.background_colour = verify_colour(TRANSPARENT)
+        self.background_colour = verify_colour(Colours.TRANSPARENT)
 
     def _update_text_position(self):
         box: pygame.Rect

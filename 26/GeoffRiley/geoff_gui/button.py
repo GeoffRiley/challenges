@@ -4,10 +4,13 @@
 
     Descended from panel
 """
+from typing import List
 
-from base_component import BaseComponent
-from colours import *
-from panel import Panel
+import pygame
+
+from geoff_gui.base_component import BaseComponent
+from geoff_gui.colours import Colours, ColourValue, verify_colour
+from geoff_gui.panel import Panel
 
 
 class Button(Panel):
@@ -20,9 +23,10 @@ class Button(Panel):
         if 'height' in kwargs:
             kwargs.pop('height')
         super().__init__(left, top, width, height, display, parent, **kwargs)
-        self._button_colour: ColourValue = verify_colour(SILVER)
-        self._hover_colour: ColourValue = verify_colour(GREY)
-        self._click_colour: ColourValue = verify_colour(WHITE)
+        self.corner_radius = 4
+        self._button_colour: ColourValue = verify_colour(Colours.SILVER)
+        self._hover_colour: ColourValue = verify_colour(Colours.GREY)
+        self._click_colour: ColourValue = verify_colour(Colours.WHITE)
 
     def draw(self) -> None:
         if self.visible:

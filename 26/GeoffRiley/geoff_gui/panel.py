@@ -4,14 +4,14 @@
 
     Descended from BaseComponent
 """
-from typing import Callable
+from typing import Callable, List, Tuple
 
 import pygame.freetype
 
-from alignment import Alignment
-from base_component import BaseComponent
-from colours import *
-from mouse_buttons import MouseButtons
+from geoff_gui.alignment import Alignment
+from geoff_gui.base_component import BaseComponent
+from geoff_gui.colours import Colours, ColourValue, verify_colour
+from geoff_gui.mouse_buttons import MouseButtons
 
 
 class Panel(BaseComponent):
@@ -25,11 +25,11 @@ class Panel(BaseComponent):
         self._font: pygame.freetype.Font = pygame.freetype.SysFont(self._font_name, self._font_size)
         self._text_align: Alignment = Alignment(Alignment.CENTER, Alignment.MIDDLE)
         self._margin: int = 4
-        self._colour: ColourValue = verify_colour(BLACK)
-        self._background_colour: ColourValue = verify_colour(SILVER)
+        self._colour: ColourValue = verify_colour(Colours.BLACK)
+        self._background_colour: ColourValue = verify_colour(Colours.SILVER)
         self.border: bool = True
-        self._border_colour: ColourValue = verify_colour(BLACK)
-        self._corner_radius: int = 4
+        self._border_colour: ColourValue = verify_colour(Colours.BLACK)
+        self._corner_radius: int = 0
 
         self._update_text_graphic()
 
@@ -172,6 +172,14 @@ class Panel(BaseComponent):
     @border_colour.setter
     def border_colour(self, value: ColourValue):
         self._border_colour = verify_colour(value)
+
+    @property
+    def corner_radius(self) -> int:
+        return self._corner_radius
+
+    @corner_radius.setter
+    def corner_radius(self, value: int) -> None:
+        self._corner_radius = value
 
     @property
     def clicked(self) -> bool:
