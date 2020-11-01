@@ -11,6 +11,11 @@ from geoff_gui.button import Button
 from geoff_gui.colours import Colours
 from geoff_gui.label import Label
 from geoff_gui.panel import Panel
+from geoff_gui.textbox import TextBox
+
+# Version check
+if pygame.get_sdl_version() < (2, 0, 0):
+    raise Exception("This example requires pygame 2.")
 
 # pygame generic parameters
 WIDTH, HEIGHT = 800, 600
@@ -42,7 +47,10 @@ class GeoffGui:
         self.label1.font_size = 25
         self.label1.text_align = (Alignment.CENTER, Alignment.MIDDLE)
 
+        self.textbox1 = TextBox(WIDTH // 2, HEIGHT // 2 + 100, 200)
+
         self.gui_root.add_component(self.label1)
+        self.gui_root.add_component(self.textbox1)
 
     def take_click(self, comp: BaseComponent, pos: tuple):
         repos = [

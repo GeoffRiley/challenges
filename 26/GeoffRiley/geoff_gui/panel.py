@@ -20,9 +20,10 @@ class Panel(BaseComponent):
                  display: pygame.Surface = None, parent: BaseComponent = None, **kwargs):
         super().__init__(left, top, width, height, display, parent)
         self._text: str = ''
-        self._font_size = 12
+        self._font_size = 14
         self._font_name = 'calibri,sans'
         self._font: pygame.freetype.Font = pygame.freetype.SysFont(self._font_name, self._font_size)
+        self._font.origin = True
         self._text_align: Alignment = Alignment(Alignment.CENTER, Alignment.MIDDLE)
         self._margin: int = 4
         self._colour: ColourValue = verify_colour(Colours.BLACK)
