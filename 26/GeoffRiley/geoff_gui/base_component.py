@@ -3,7 +3,19 @@
     GUI component: BaseComponent
     Abstract Base Class
 
-    A foundation for visual GUI elements to be build upon
+    A foundation for visual GUI elements to be built upon
+
+    ## `BaseComponent`
+
+    | Component     | `BaseComponent`   |
+    | ------------- | ----------------- | ------
+    | _Properties_  |                   |
+    |               | `name`            | `str`
+    |               | `tag`             | `ANY`
+
+    ### Inheritance
+
+    `Object` -> `BaseComponent`
 """
 
 from abc import ABC, abstractmethod

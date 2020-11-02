@@ -11,10 +11,11 @@ import pygame.freetype
 from geoff_gui.alignment import Alignment
 from geoff_gui.base_component import BaseComponent
 from geoff_gui.colours import Colours, ColourValue, verify_colour
+from geoff_gui.container_component import ContainerComponent
 from geoff_gui.mouse_buttons import MouseButtons
 
 
-class Panel(BaseComponent):
+class Panel(ContainerComponent):
 
     def __init__(self, left: int, top: int, width: int, height: int,
                  display: pygame.Surface = None, parent: BaseComponent = None, **kwargs):

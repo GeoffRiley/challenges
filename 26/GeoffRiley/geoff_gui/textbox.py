@@ -9,12 +9,12 @@ from typing import Callable, List, Tuple
 import pygame.freetype
 from pygame import freetype
 
+from geoff_gui.control_component import ControlComponent
 from geoff_gui.base_component import BaseComponent
 from geoff_gui.colours import Colours, ColourValue, verify_colour
-from geoff_gui.panel import Panel
 
 
-class TextBox(Panel):
+class TextBox(ControlComponent):
     def __init__(self, left: int, top: int, width: int,
                  display: pygame.Surface = None, parent: BaseComponent = None, **kwargs):
         height = 48
