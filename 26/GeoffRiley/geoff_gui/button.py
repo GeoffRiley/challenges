@@ -22,7 +22,7 @@ class Button(ControlComponent):
         height: int = kwargs.get('height', 30)
         if 'height' in kwargs:
             kwargs.pop('height')
-        super().__init__(left, top, width, height, display, parent, **kwargs)
+        super().__init__(pygame.Rect(left, top, width, height), display, parent, **kwargs)
         self.corner_radius = 4
         self._button_colour: ColourValue = verify_colour(Colours.SILVER)
         self._hover_colour: ColourValue = verify_colour(Colours.GREY)

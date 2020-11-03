@@ -19,31 +19,16 @@
 """
 
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Any
 
 import pygame
 
 
 class BaseComponent(ABC):
-    def __init__(self, left: int, top: int, width: int, height: int,
-                 display: pygame.Surface = None, parent: 'BaseComponent' = None):
-        self.area: pygame.Rect = pygame.Rect(left, top, width, height)
-        self.display: pygame.Surface = display
-        self.parent: 'BaseComponent' = parent
-        self.children: List['BaseComponent'] = list()
-        self._tag: int = 0
+    def __init__(self, parent: 'BaseComponent' = None):
+        self._parent: 'BaseComponent' = parent
+        self._tag: Any = None
         self._name: str = ''
-        self._visible: bool = True
-        self._disabled: bool = False
-
-    @abstractmethod
-    def draw(self) -> None:
-        """
-            Process draw requests
-
-            :return: None
-        """
-        pass
 
     @abstractmethod
     def message(self, message: List[pygame.event.Event]) -> None:
@@ -56,37 +41,12 @@ class BaseComponent(ABC):
         pass
 
     @property
-    def visible(self) -> bool:
-        return self._visible
-
-    @visible.setter
-    def visible(self, value: bool) -> None:
-        if isinstance(value, bool):
-            self._visible = value
-        else:
-            raise TypeError(f'visible property requires a boolean value, received {type(value)} ({value})')
-
-    @property
-    def disabled(self) -> bool:
-        return self._disabled
-
-    @disabled.setter
-    def disabled(self, value: bool) -> None:
-        if isinstance(value, bool):
-            self._disabled = value
-        else:
-            raise TypeError(f'disabled property requires a boolean value, received {type(value)} ({value})')
-
-    @property
-    def tag(self) -> int:
+    def tag(self) -> Any:
         return self._tag
 
     @tag.setter
-    def tag(self, value: int) -> None:
-        if isinstance(value, int):
-            self._tag = value
-        else:
-            raise TypeError(f'tag property requires a integer value, received {type(value)} ({value})')
+    def tag(self, value: Any) -> None:
+        self._tag = value
 
     @property
     def name(self) -> str:
@@ -99,8 +59,3 @@ class BaseComponent(ABC):
         else:
             raise TypeError(f'name property requires a string value, received {type(value)} ({value})')
 
-    def add_component(self, new_component: 'BaseComponent') -> None:
-        new_component.parent = self
-        if new_component.display is None:
-            new_component.display = self.display
-        self.children.append(new_component)

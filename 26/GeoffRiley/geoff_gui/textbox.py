@@ -19,6 +19,7 @@ class TextBox(ControlComponent):
                  display: pygame.Surface = None, parent: BaseComponent = None, **kwargs):
         height = 48
         text = kwargs.get('text', '')
+        rect = pygame.Rect(left, top, width, height)
         if 'text' in kwargs:
             kwargs.pop('text')
         self._max_entry_len = kwargs.get('maxLength', 0)
@@ -28,7 +29,7 @@ class TextBox(ControlComponent):
         if 'onChange' in kwargs:
             kwargs.pop('onChange')
         self._anchor = {'h': left, 'v': top}
-        super().__init__(left, top, width, height, display, parent, **kwargs)
+        super().__init__(rect, display, parent)
 
         self.background_colour: ColourValue = verify_colour(Colours.WHITE)
         self.colour: ColourValue = verify_colour(Colours.BLACK)

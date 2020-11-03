@@ -14,7 +14,7 @@ hierarchy of common Python classes to represent the different items.
 
 ## Process
 
-A GUI comprises of many elementary components, both visible and invisible. The
+A GUI comprises of mAny elementary components, both visible and invisible. The
 visible components go towards creating a visual presentation, whilst the 
 invisible components provide the necessary support and interconnections.
 
@@ -42,11 +42,6 @@ The definition of the `BaseComponent` impacts every single other component
 within the GUI definition, for this reason it has a bare minimum of 
 functionality that will be shared.
 
-
-
-
-
-
 The most basic GUI element is the screen rectangle, or `panel`. This has a few 
 properties beyond those of the base class, including the visible aspects of 
 how the panel should be represented, the area that it should occupy, its colour
@@ -69,7 +64,8 @@ corners. It also has the clear intention of invoking interaction with a mouse.
 | ---: | ---: | :--- |
 | _Properties_
 | | `name` | `str`
-| | `tag` | `ANY`
+| | `tag` | `Any`
+| | `parent` | `BaseComponent`
 
 ### Inheritance
 
@@ -84,23 +80,33 @@ to be easily recognised, for example, during a debugging process.  Each
 component is created with a randomly unique name, but this should be set to
 a logical name after creation. 
 
-- `tag` : ANY
+- `tag` : Any
 
 Every component has a `tag` associated with it. The tag has no system meaning
 but is provided for end user defined purposed. The tag is never modified by 
 the system during operation other than being set to the default of `None` upon
 creation.
 
+- `parent` : BaseComponent
+
+Every component other than the root has a parent: the component that it is 
+responsible to when being destroyed.
+
 ## `GraphicalComponent`
 
 | Component | `GraphicalComponent` | |
 | ---: | ---: | :--- |
 | _Properties_
-| | `area.left` | `int`
-| | `area.top` | `int`
-| | `area.width` | `int`
-| | `area.height` | `int`
+| | `area` | `Rect`
 | | `visible` | `bool`
+| | `display` | `pygame.Surface`
+| | `colour` | `ColourValue`
+| | `background_colour` | `ColourValue`
+| | `anchor` | `Dict['v','h']`
+| | `text` | `str`
+| | `font_size` | `int`
+| | `font_name` | `str`
+| | `text_align` | `Alignment`
 | _Methods_
 | | `hide()`
 | | `show()`
@@ -166,7 +172,7 @@ These properties are inherited directly from `GraphicalComponent`.
 - `disabled` : bool
 
 The `disabled` property indicated if this component is currently available for
-interaction. When it is `False` then the component will ignore any attempted 
+interaction. When it is `False` then the component will ignore Any attempted 
 user interaction, when it is `True` then the component will respond.
 
 It is normal for a disabled control to be displayed differently to an active
