@@ -17,58 +17,61 @@ from geoff_gui.mouse_buttons import MouseButtons
 
 class Panel(ContainerComponent):
 
-    def __init__(self, left: int, top: int, width: int, height: int,
-                 display: pygame.Surface = None, parent: BaseComponent = None, **kwargs):
-        super().__init__(pygame.Rect(left, top, width, height), display, parent)
-        self._margin: int = 4
-        self.border: bool = True
-        self._border_colour: ColourValue = verify_colour(Colours.BLACK)
-        self._corner_radius: int = 0
+    def __init__(self, rect: pygame.Rect,
+                 display: pygame.Surface = None,
+                 parent: BaseComponent = None, **kwargs):
+        super().__init__(rect, display, parent, **kwargs)
+        # self._margin: int = 4
+        # self.border: bool = True
+        # self._border_colour: ColourValue = verify_colour(Colours.BLACK)
+        # self._corner_radius: int = 0
 
         self._update_text_graphic()
 
-        self._clicked: bool = False
-
-        self.onClick: Callable[[BaseComponent, Tuple[int, int]], None] = kwargs.get('onClick', lambda *x: None)
-        self.onMouseDown: Callable[[BaseComponent, Tuple[int, int], int], None] = kwargs.get('onMouseDown',
-                                                                                             lambda *x: None)
-        self.onMouseOver: Callable[[BaseComponent, Tuple[int, int], int, int], None] = kwargs.get('onMouseOver',
-                                                                                                  lambda *x: None)
-        self.onMouseUp: Callable[[BaseComponent, Tuple[int, int], int], None] = kwargs.get('onMouseUp', lambda *x: None)
+        # self._clicked: bool = False
+        #
+        # self.onClick: Callable[[BaseComponent, Tuple[int, int]], None] = kwargs.get('onClick', lambda *x: None)
+        # self.onMouseDown: Callable[[BaseComponent, Tuple[int, int], int], None] = kwargs.get('onMouseDown',
+        #                                                                                      lambda *x: None)
+        # self.onMouseOver: Callable[[BaseComponent, Tuple[int, int], int, int], None] = kwargs.get('onMouseOver',
+        #                                                                                           lambda *x: None)
+        # self.onMouseUp: Callable[[BaseComponent, Tuple[int, int], int], None] = kwargs.get('onMouseUp', lambda *x: None)
 
     def draw(self) -> None:
-        if self.visible:
-            if self.border:
-                pygame.draw.rect(self.display, self.border_colour,
-                                 self.area.inflate(self._margin // 2, self._margin // 2),
-                                 border_radius=self._corner_radius)
-            if self.background_colour.a > 0:
-                pygame.draw.rect(self.display, self.background_colour, self.area,
-                                 border_radius=self._corner_radius)
-            if self._text.strip() != '':
-                self.display.blit(self._text_graphic[0], self._text_graphic[1])
+        # if self.visible:
+        #     if self.border:
+        #         pygame.draw.rect(self.display, self.border_colour,
+        #                          self.area.inflate(self._margin // 2, self._margin // 2),
+        #                          border_radius=self._corner_radius)
+        #     if self.background_colour.a > 0:
+        #         pygame.draw.rect(self.display, self.background_colour, self.area,
+        #                          border_radius=self._corner_radius)
+        #     if self._text.strip() != '':
+        #         self.display.blit(self._text_graphic[0], self._text_graphic[1])
+        super().draw()
 
     def message(self, message: List[pygame.event.Event]) -> None:
-        if not self.disabled:
-            for event in message:
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    pos = event.pos
-                    if self.area.collidepoint(pos):
-                        button_affected = event.button
-                        if button_affected == MouseButtons.LEFT:
-                            self.onClick(self, pos)
-                            self._clicked = True
-                        self.onMouseDown(self, pos, button_affected)
-                if event.type == pygame.MOUSEBUTTONUP:
-                    pos = event.pos
-                    if self.area.collidepoint(pos):
-                        self.onMouseUp(self, pos, event.button)
-                if event.type == pygame.MOUSEMOTION:
-                    pos = event.pos
-                    if self.area.collidepoint(pos):
-                        self.onMouseOver(self, pos, event.rel, event.buttons)
-            if not pygame.mouse.get_pressed(3)[0]:
-                self._clicked = False
+        super().message(message)
+        # if not self.disabled:
+        #     for event in message:
+        #         if event.type == pygame.MOUSEBUTTONDOWN:
+        #             pos = event.pos
+        #             if self.area.collidepoint(pos):
+        #                 button_affected = event.button
+        #                 if button_affected == MouseButtons.LEFT:
+        #                     self.onClick(self, pos)
+        #                     self._clicked = True
+        #                 self.onMouseDown(self, pos, button_affected)
+        #         if event.type == pygame.MOUSEBUTTONUP:
+        #             pos = event.pos
+        #             if self.area.collidepoint(pos):
+        #                 self.onMouseUp(self, pos, event.button)
+        #         if event.type == pygame.MOUSEMOTION:
+        #             pos = event.pos
+        #             if self.area.collidepoint(pos):
+        #                 self.onMouseOver(self, pos, event.rel, event.buttons)
+        #     if not pygame.mouse.get_pressed(3)[0]:
+        #         self._clicked = False
 
     # def _update_text_position(self):
     #     img, box = self._text_graphic

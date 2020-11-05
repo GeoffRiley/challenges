@@ -34,8 +34,9 @@ from geoff_gui.colours import ColourValue, verify_colour, Colours
 
 
 class GraphicalComponent(BaseComponent):
-    def __init__(self, rect: pygame.Rect,  # left: int, top: int, width: int, height: int,
-                 display: pygame.Surface = None, parent: BaseComponent = None):
+    def __init__(self, rect: pygame.Rect,
+                 display: pygame.Surface = None,
+                 parent: BaseComponent = None):
         super().__init__(parent)
         self._area: pygame.Rect = rect  # pygame.Rect(left, top, width, height)
         self._visible: bool = True

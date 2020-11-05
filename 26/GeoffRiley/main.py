@@ -30,7 +30,8 @@ class GeoffGui:
         pygame.init()
         self.display = pygame.display.set_mode((WIDTH, HEIGHT))
         pygame.display.set_caption('Gooey ooey ooey')
-        self.gui_root = Panel(0, 0, WIDTH, HEIGHT, self.display)
+        limits = self.display.get_rect()
+        self.gui_root = Panel(limits, self.display)
 
         x_spacing = WIDTH // 4
         for x in range(3):

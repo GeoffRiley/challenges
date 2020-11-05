@@ -28,29 +28,31 @@
     `BaseComponent` -> `GraphicalComponent` -> `ControlComponent` -> `ContainerComponent`
 """
 from abc import abstractmethod
-from typing import List
+from typing import List, Callable, Tuple
 
 import pygame
 
 from geoff_gui.base_component import BaseComponent
+from geoff_gui.colours import ColourValue, verify_colour, Colours
 from geoff_gui.control_component import ControlComponent
+from geoff_gui.mouse_buttons import MouseButtons
 
 
 class ContainerComponent(ControlComponent):
     def __init__(self, rect: pygame.Rect,
-                 display: pygame.Surface = None, parent: BaseComponent = None):
-        super().__init__(rect, display, parent)
+                 display: pygame.Surface = None,
+                 parent: BaseComponent = None,
+                 **kwargs):
+        super().__init__(rect, display, parent, **kwargs)
 
-    @abstractmethod
     def draw(self) -> None:
         """
             Process draw requests
 
             :return: None
         """
-        pass
+        super().draw()
 
-    @abstractmethod
     def message(self, message: List[pygame.event.Event]) -> None:
         """
             Process event message queue passed in message
@@ -58,4 +60,4 @@ class ContainerComponent(ControlComponent):
             :param message: List of event messages
             :return: None
         """
-        pass
+        super().message(message)

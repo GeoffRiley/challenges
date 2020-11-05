@@ -110,6 +110,9 @@ responsible to when being destroyed.
 | _Methods_
 | | `hide()`
 | | `show()`
+| | `draw()`
+| | `message()`
+
 
 ### Inheritance
 
@@ -122,18 +125,78 @@ responsible to when being destroyed.
 The `area` specified the position of this component within it's current
 container. The minimum parameters required to describe an area are:
 
-- `Rect`
-    - `left` : int
-    - `top` : int
-    - `width` : int
-    - `height` : int
-
+> - `Rect`
+>     - `left` : int
+>     - `top` : int
+>     - `width` : int
+>     - `height` : int
+> 
 > Note: `Rect` is defined in [pygame.Rect](https://www.pygame.org/docs/ref/rect.html).
 
 - `visible` : bool
 
 The `visible` property indicates whether the component should be drawn or not. 
 It is modified by using the `hide()` and `show()` methods.
+
+- `display` : pygame.Surface
+
+This property holds a reference to the surface on which the control will be 
+drawn.  This is often the actual screen but it can be any suitable pygame 
+surface, for example a pygame image.
+
+- `colour` : ColourValue
+
+The `colour` indicates the foreground colour of any descendant component. This 
+is normally the colour of any text, but for an non-textural component it will
+be the colour of the prominent element of the representation, for example the 
+'sausage' in a scrollbar. 
+
+- `background_colour` : ColourValue
+
+This is the colour of the plain component field.  The background colour can be
+specified as transparent, but the result will depend upon the particular 
+component.
+
+- `anchor` : Dict['v','h']
+
+Text can anchored around a particular point in the 2D space, this property 
+represents the **v**ertical and **h**orizonal co-ordinates of the anchor
+point.
+
+- `text` : str
+
+A string that may be displayed by this component if appropriate.
+
+- `font_size` : int
+
+The font size for the current font, if the current font is a bitmapped font
+then this may not make any change unless it is a natural size or multiple
+thereof.
+
+- `font_name` : str
+
+When written, this is a request to find a font, if the requested font is not
+found then, provided the name is recognised, an equivalent will be selected.
+In the event that neither is the case, then a default font will be selected.
+
+When read, this reports the full name of the currently selected font. This is
+the name read from the font file rather than the name previously written to
+this property.
+
+- `text_align` : Alignment
+
+Alignment of the text within the component area.  It is represented as a two
+element tuple with a horizontal and vertical component, the `Alignment` class
+contains suitable constants:
+
+| `Alignment.`… | _Horizontal_ | _Vertical_ |
+| --- | :---: | :---: |
+| | …`.LEFT`   | …`.TOP`
+| | …`.CENTER` | …`.MIDDLE`
+| | …`.RIGHT`  | …`.BOTTOM`
+
+Additionally, it is possible to address the elements individually by using the
+properties `horizontal_alignment` and `vertical_alignment`. 
 
 ### Methods
 
@@ -143,6 +206,16 @@ It is modified by using the `hide()` and `show()` methods.
 These two methods work in tandem to (a) modify the `visible` property and (b)
 cause the component to either be hidden or shown as a consequence. No 
 parameters are expected for either method.
+
+- `draw()`
+
+The `draw` method in this component is a placeholder, it should be overridden by
+any descendent component to perform the action of drawing to the display surface.
+
+- `message()`
+
+The `message` method in this component is a placeholder, it should be overridden
+by any descendent component to scan for pygame event messages needing action. 
 
 ## `ControlComponent`
 
@@ -157,6 +230,7 @@ parameters are expected for either method.
 | | `show()`
 | | `disable()`
 | | `enable()`
+| | `add_component()`
 
 ### Inheritance
 
@@ -171,14 +245,18 @@ These properties are inherited directly from `GraphicalComponent`.
 
 - `disabled` : bool
 
-The `disabled` property indicated if this component is currently available for
-interaction. When it is `False` then the component will ignore Any attempted 
-user interaction, when it is `True` then the component will respond.
+The, read only, `disabled` property indicated if this component is currently 
+available for interaction. When it is `False` then the component will ignore 
+Any attempted user interaction, when it is `True` then the component will 
+respond.
 
 It is normal for a disabled control to be displayed differently to an active
 control.
 
-## Methods
+This is a read only property that reflects the action of the methods 
+`enable()` and `disable()`.
+
+### Methods
 
 - `hide()`
 - `show()`
@@ -191,6 +269,9 @@ These methods are inherited directly from `GraphicalComponent`.
 The purpose of these two methods is to (a) modify the value of the `disabled`
 property and (b) to trigger the change in operation of the component between
 its inactive and active states.
+
+Every invocation of `disable()` _must_ be matched with a corresponding 
+invocation of `enable()` otherwise the component will remain disabled.
 
 ## `ContainerComponent`
 
