@@ -4,17 +4,20 @@
 
     Descended from Panel
 """
-from typing import Callable, List, Tuple
+from typing import Callable, List
 
 import pygame.freetype
 from pygame import freetype
 
-from geoff_gui.control_component import ControlComponent
 from geoff_gui.base_component import BaseComponent
 from geoff_gui.colours import Colours, ColourValue, verify_colour
+from geoff_gui.control_component import ControlComponent
+
+onChangeEvent = Callable[[BaseComponent, str, str], None]
 
 
 class TextBox(ControlComponent):
+
     def __init__(self, left: int, top: int, width: int,
                  display: pygame.Surface = None, parent: BaseComponent = None, **kwargs):
         height = 48
@@ -25,7 +28,7 @@ class TextBox(ControlComponent):
         self._max_entry_len = kwargs.get('maxLength', 0)
         if 'maxLength' in kwargs:
             kwargs.pop('maxLength')
-        self.onChange: Callable[[BaseComponent, Tuple[int, int]], None] = kwargs.get('onChange', lambda *x: None)
+        self._onChange: onChangeEvent = kwargs.get('onChange', lambda *x: None)
         if 'onChange' in kwargs:
             kwargs.pop('onChange')
         self._anchor = {'h': left, 'v': top}
@@ -50,26 +53,50 @@ class TextBox(ControlComponent):
             paint_rect = self.area.copy()
             paint_rect.top = paint_rect.centery
             paint_rect.left += 25
-            l = self._font.render_to(self.display, paint_rect, self.cursor_text[:self.cursor_pos], self.colour,
-                                     self.background_colour)
-            paint_rect.x += l.width
+            left_part = self._font.render_to(self.display,
+                                             paint_rect,
+                                             self.cursor_text[:self.cursor_pos],
+                                             self.colour,
+                                             self.background_colour)
+            paint_rect.x += left_part.width
             if self.editing_text != '':
-                m1 = self._font.render_to(self.display, paint_rect, self.editing_text[:self.editing_pos], self.colour,
-                                          self.background_colour, freetype.STYLE_UNDERLINE)
-                paint_rect.x += m1.width
-                c = self._font.render_to(self.display, paint_rect, '|', self.cursor_color, self.background_colour)
-                paint_rect.x += c.width
-                m2 = self._font.render_to(self.display, paint_rect, self.editing_text[self.editing_pos:], self.colour,
-                                          self.background_colour, freetype.STYLE_UNDERLINE)
-                paint_rect.x += m2.width
+                mid_part1 = self._font.render_to(self.display,
+                                                 paint_rect,
+                                                 self.editing_text[:self.editing_pos],
+                                                 self.colour,
+                                                 self.background_colour,
+                                                 freetype.STYLE_UNDERLINE)
+                paint_rect.x += mid_part1.width
+                cursor_part = self._font.render_to(self.display,
+                                                   paint_rect,
+                                                   '|', self.cursor_color,
+                                                   self.background_colour)
+                paint_rect.x += cursor_part.width
+                mid_part2 = self._font.render_to(self.display,
+                                                 paint_rect,
+                                                 self.editing_text[self.editing_pos:],
+                                                 self.colour,
+                                                 self.background_colour,
+                                                 freetype.STYLE_UNDERLINE)
+                paint_rect.x += mid_part2.width
             else:
-                c = self._font.render_to(self.display, paint_rect, '|', self.cursor_color, self.background_colour)
-                paint_rect.x += c.width
-            r = self._font.render_to(self.display, paint_rect, self.cursor_text[self.cursor_pos:], self.colour,
-                                     self.background_colour)
+                cursor_part = self._font.render_to(self.display,
+                                                   paint_rect,
+                                                   '|',
+                                                   self.cursor_color,
+                                                   self.background_colour,
+                                                   freetype.STYLE_STRONG)
+                paint_rect.x += cursor_part.width + 4
+            right_part = self._font.render_to(self.display,
+                                              paint_rect,
+                                              self.cursor_text[self.cursor_pos:],
+                                              self.colour,
+                                              self.background_colour)
+            paint_rect.x += right_part.width
 
     def message(self, message: List[pygame.event.Event]) -> None:
         if not self.disabled:
+            before_event = self.cursor_text
             for event in message:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     self.active = self.area.collidepoint(event.pos)
@@ -87,12 +114,12 @@ class TextBox(ControlComponent):
                         key = event.key
                         if key == pygame.K_BACKSPACE:
                             if len(self.cursor_text) > 0 and self.cursor_pos > 0:
-                                self.cursor_text = self.cursor_text[:self.cursor_pos - 1] + self.cursor_text[
-                                                                                            self.cursor_pos:]
+                                self.cursor_text = (self.cursor_text[:self.cursor_pos - 1] +
+                                                    self.cursor_text[self.cursor_pos:])
                                 self.cursor_pos -= 1
                         elif key == pygame.K_DELETE:
-                            self.cursor_text = self.cursor_text[:self.cursor_pos] + self.cursor_text[
-                                                                                    self.cursor_pos + 1:]
+                            self.cursor_text = (self.cursor_text[:self.cursor_pos] +
+                                                self.cursor_text[self.cursor_pos + 1:])
                         elif key == pygame.K_HOME:
                             self.cursor_pos = 0
                         elif key == pygame.K_LEFT:
@@ -106,11 +133,13 @@ class TextBox(ControlComponent):
                         elif key in [pygame.K_RETURN, pygame.K_KP_ENTER]:
                             pygame.key.stop_text_input()
                             self._started_text_input = False
+
                     elif event.type == pygame.TEXTINPUT:
                         self.ime_editing = False
                         self.editing_text = ''
-                        self.cursor_text = self.cursor_text[:self.cursor_pos] + event.text + self.cursor_text[
-                                                                                             self.cursor_pos:]
+                        self.cursor_text = (self.cursor_text[:self.cursor_pos] +
+                                            event.text +
+                                            self.cursor_text[self.cursor_pos:])
                         self.cursor_pos += len(event.text)
                     elif event.type == pygame.TEXTEDITING:
                         self.ime_editing = True
@@ -121,5 +150,15 @@ class TextBox(ControlComponent):
                         # let the system know that we've stopped dealing with text input
                         pygame.key.stop_text_input()
                         self._started_text_input = False
+            if before_event != self.cursor_text:
+                self.onChange(self, before_event, self.cursor_text)
 
         super().message(message)
+
+    @property
+    def onChange(self) -> onChangeEvent:
+        return self._onChange
+
+    @onChange.setter
+    def onChange(self, value: onChangeEvent) -> None:
+        self._onChange = value

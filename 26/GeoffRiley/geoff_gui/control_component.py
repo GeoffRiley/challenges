@@ -26,7 +26,6 @@
     `BaseComponent` -> `GraphicalComponent` -> `ControlComponent`
 """
 
-from abc import ABC, abstractmethod
 from typing import List, Callable, Tuple
 
 import pygame
@@ -36,8 +35,17 @@ from geoff_gui.colours import ColourValue, Colours, verify_colour
 from geoff_gui.graphical_component import GraphicalComponent
 from geoff_gui.mouse_buttons import MouseButtons
 
+onMouseUpEvent = Callable[[BaseComponent, Tuple[int, int], int], None]
+
+onMouseOverEvent = Callable[[BaseComponent, Tuple[int, int], int, int], None]
+
+onMouseDownEvent = Callable[[BaseComponent, Tuple[int, int], int], None]
+
+onClickEvent = Callable[[BaseComponent, Tuple[int, int]], None]
+
 
 class ControlComponent(GraphicalComponent):
+
     def __init__(self, rect: pygame.Rect,
                  display: pygame.Surface = None,
                  parent: BaseComponent = None,
@@ -45,7 +53,6 @@ class ControlComponent(GraphicalComponent):
         super().__init__(rect, display, parent)
         self._disabled: bool = False
         self._disabled_count: int = 0
-        self._children: List[GraphicalComponent] = list()
 
         self._margin: int = 4
         self.border: bool = True
@@ -54,12 +61,10 @@ class ControlComponent(GraphicalComponent):
 
         self._clicked: bool = False
 
-        self.onClick: Callable[[BaseComponent, Tuple[int, int]], None] = kwargs.get('onClick', lambda *x: None)
-        self.onMouseDown: Callable[[BaseComponent, Tuple[int, int], int], None] = kwargs.get('onMouseDown',
-                                                                                             lambda *x: None)
-        self.onMouseOver: Callable[[BaseComponent, Tuple[int, int], int, int], None] = kwargs.get('onMouseOver',
-                                                                                                  lambda *x: None)
-        self.onMouseUp: Callable[[BaseComponent, Tuple[int, int], int], None] = kwargs.get('onMouseUp', lambda *x: None)
+        self._onClick: onClickEvent = kwargs.get('onClick', lambda *x: None)
+        self._onMouseDown: onMouseDownEvent = kwargs.get('onMouseDown', lambda *x: None)
+        self._onMouseOver: onMouseOverEvent = kwargs.get('onMouseOver', lambda *x: None)
+        self._onMouseUp: onMouseUpEvent = kwargs.get('onMouseUp', lambda *x: None)
 
     @property
     def disabled(self) -> bool:
@@ -74,6 +79,46 @@ class ControlComponent(GraphicalComponent):
         assert self._disabled_count >= 0
         if self._disabled_count == 0:
             self._disabled = False
+
+    @property
+    def onClick(self) -> onClickEvent:
+        return self._onClick
+
+    @onClick.setter
+    def onClick(self, value: onClickEvent) -> None:
+        self._onClick = value
+
+    @property
+    def onMouseDown(self) -> onMouseDownEvent:
+        return self._onMouseDown
+
+    @onMouseDown.setter
+    def onMouseDown(self, value: onMouseDownEvent) -> None:
+        self._onMouseDown = value
+
+    @property
+    def onMouseOver(self) -> onMouseOverEvent:
+        return self._onMouseOver
+
+    @onMouseOver.setter
+    def onMouseOver(self, value: onMouseOverEvent) -> None:
+        self._onMouseOver = value
+
+    @property
+    def onMouseUp(self) -> onMouseUpEvent:
+        return self._onMouseUp
+
+    @onMouseUp.setter
+    def onMouseUp(self, value: onMouseUpEvent) -> None:
+        self._onMouseUp = value
+
+    @property
+    def corner_radius(self) -> int:
+        return self._corner_radius
+
+    @corner_radius.setter
+    def corner_radius(self, value: int) -> None:
+        self._corner_radius = value
 
     def draw(self) -> None:
         """
@@ -90,10 +135,7 @@ class ControlComponent(GraphicalComponent):
                 pygame.draw.rect(self.display, self.background_colour, self.area,
                                  border_radius=self._corner_radius)
             if self._text.strip() != '':
-                self.display.blit(self._text_graphic[0], self._text_graphic[1])
-
-        for c in self._children:
-            c.draw()
+                self.display.blit(*self._text_graphic)
 
     def message(self, message: List[pygame.event.Event]) -> None:
         """
@@ -122,12 +164,3 @@ class ControlComponent(GraphicalComponent):
                         self.onMouseOver(self, pos, event.rel, event.buttons)
             if not pygame.mouse.get_pressed(3)[0]:
                 self._clicked = False
-
-        for c in self._children:
-            c.message(message)
-
-    def add_component(self, new_component: GraphicalComponent) -> None:
-        new_component.parent = self
-        if new_component.display is None:
-            new_component.display = self._display
-        self._children.append(new_component)

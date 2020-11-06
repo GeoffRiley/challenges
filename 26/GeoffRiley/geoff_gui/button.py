@@ -8,9 +8,9 @@ from typing import List
 
 import pygame
 
-from geoff_gui.control_component import ControlComponent
 from geoff_gui.base_component import BaseComponent
 from geoff_gui.colours import Colours, ColourValue, verify_colour
+from geoff_gui.control_component import ControlComponent
 
 
 class Button(ControlComponent):
@@ -19,7 +19,7 @@ class Button(ControlComponent):
         width: int = kwargs.get('width', 60)
         if 'width' in kwargs:
             kwargs.pop('width')
-        height: int = kwargs.get('height', 30)
+        height: int = kwargs.get('height', 20)
         if 'height' in kwargs:
             kwargs.pop('height')
         super().__init__(pygame.Rect(left, top, width, height), display, parent, **kwargs)

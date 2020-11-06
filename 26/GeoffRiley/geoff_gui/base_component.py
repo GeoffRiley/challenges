@@ -19,16 +19,22 @@
 """
 
 from abc import ABC, abstractmethod
+from collections import defaultdict
 from typing import List, Any
 
 import pygame
 
 
 class BaseComponent(ABC):
+    __component_counter = defaultdict(int)
+
     def __init__(self, parent: 'BaseComponent' = None):
         self._parent: 'BaseComponent' = parent
         self._tag: Any = None
-        self._name: str = ''
+        cls_name = self.__class__.__name__
+        BaseComponent.__component_counter[cls_name] += 1
+        self._name: str = f'{cls_name}_{BaseComponent.__component_counter[cls_name]}'
+        pass
 
     @abstractmethod
     def message(self, message: List[pygame.event.Event]) -> None:
@@ -58,4 +64,3 @@ class BaseComponent(ABC):
             self._name = value
         else:
             raise TypeError(f'name property requires a string value, received {type(value)} ({value})')
-

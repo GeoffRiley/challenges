@@ -49,6 +49,7 @@ class GeoffGui:
         self.label1.text_align = (Alignment.CENTER, Alignment.MIDDLE)
 
         self.textbox1 = TextBox(WIDTH // 2, HEIGHT // 2 + 100, 200)
+        self.textbox1.onChange = self.text_entered
 
         self.gui_root.add_component(self.label1)
         self.gui_root.add_component(self.textbox1)
@@ -67,6 +68,9 @@ class GeoffGui:
         ]
         self.label1.text_align = repos[comp.tag - 1]
         self.label1.text = f'Clicked {comp.tag}'
+
+    def text_entered(self, comp: BaseComponent, before_text: str, after_text: str) -> None:
+        self.label1.text = after_text
 
     def draw(self):
         self.gui_root.draw()
@@ -88,8 +92,6 @@ class GeoffGui:
                 if event.type == pygame.QUIT:
                     running = False
                     continue
-                # if event.type == pygame.MOUSEBUTTONDOWN:
-                #     pos = pygame.mouse.get_pos()
             self.gui_root.message(messages)
 
         pygame.quit()
